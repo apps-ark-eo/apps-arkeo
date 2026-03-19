@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arkeo Apps — Intelligence mobile pour les professionnels</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #D4A843;
+    --gold-light: #E8C46A;
+    --gold-dim: rgba(212,168,67,0.15);
+
+    /* Dark mode (défaut) */
+    --bg: #080808;
+    --bg2: #111111;
+    --bg3: #181818;
+    --border: rgba(255,255,255,0.07);
+    --text: #F0EDE8;
+    --text2: rgba(240,237,232,0.55);
+    --text3: rgba(240,237,232,0.3);
+    --nav-bg: rgba(8,8,8,0.85);
+    --shadow: rgba(0,0,0,0.4);
+  }
+
+  body.light {
+    --bg: #F7F5F2;
+    --bg2: #FFFFFF;
+    --bg3: #EEEBE6;
+    --border: rgba(0,0,0,0.08);
+    --text: #1A1814;
+    --text2: rgba(26,24,20,0.55);
+    --text3: rgba(26,24,20,0.3);
+    --nav-bg: rgba(247,245,242,0.88);
+    --shadow: rgba(0,0,0,0.1);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Jost', sans-serif;
+    letter-spacing: 0.3px;
+    font-weight: 200;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+
+  /* ── Noise texture overlay ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 18px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(8,8,8,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    font-size: 18px;
+    text-decoration: none;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+
+  .nav-logo-mark {
+    width: 32px; height: 32px;
+    background: var(--gold);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+
+  .nav-links { display: flex; gap: 32px; list-style: none; }
+  .nav-links a {
+    color: var(--text2);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+
+  .nav-cta {
+    background: var(--gold);
+    color: #000;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+  .nav-cta:hover { opacity: 0.85; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 40px 80px;
+    position: relative;
+  }
+
+  .hero-glow {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(212,168,67,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--gold-dim);
+    border: 1px solid rgba(212,168,67,0.3);
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gold);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--gold);
+    border-radius: 50%;
+    animation: pulse 2s ease infinite;
+  }
+
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(52px, 8vw, 96px);
+    font-weight: 500;
+    line-height: 1.05;
+    letter-spacing: -1px;
+    margin-bottom: 24px;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  h1 span { color: var(--gold); font-style: italic; }
+
+  .hero-sub {
+    font-size: clamp(16px, 2vw, 20px);
+    color: var(--text2);
+    max-width: 560px;
+    line-height: 1.6;
+    margin-bottom: 48px;
+    animation: fadeUp 0.6s 0.2s ease both;
+    font-weight: 200;
+  }
+
+  .hero-btns {
+    display: flex; gap: 12px;
+    animation: fadeUp 0.6s 0.3s ease both;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .btn-primary {
+    background: var(--gold);
+    color: #000;
+    padding: 14px 32px;
+    border-radius: 10px;
+    font-weight: 500;
+    font-size: 15px;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--text2);
+    padding: 14px 32px;
+    border-radius: 10px;
+    font-weight: 500;
+    font-size: 15px;
+    text-decoration: none;
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* ── STATS BAR ── */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    margin: 80px auto 0;
+    max-width: 700px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--bg2);
+    animation: fadeUp 0.6s 0.4s ease both;
+  }
+
+  .stat-item {
+    flex: 1;
+    padding: 24px 20px;
+    text-align: center;
+    border-right: 1px solid var(--border);
+  }
+  .stat-item:last-child { border-right: none; }
+
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--gold);
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--text3);
+    margin-top: 4px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── SECTION ── */
+  section {
+    padding: 100px 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .section-tag {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(32px, 5vw, 48px);
+    font-weight: 500;
+    letter-spacing: -0.5px;
+    margin-bottom: 16px;
+  }
+
+  .section-sub {
+    color: var(--text2);
+    font-size: 16px;
+    max-width: 500px;
+    line-height: 1.6;
+    font-weight: 200;
+    margin-bottom: 60px;
+  }
+
+  /* ── APPS GRID ── */
+  .apps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 20px;
+  }
+
+  .app-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 28px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .app-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top left, var(--card-color, rgba(212,168,67,0.05)), transparent 60%);
+    pointer-events: none;
+  }
+
+  .app-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(212,168,67,0.2);
+  }
+
+  .app-icon {
+    width: 56px; height: 56px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px;
+    margin-bottom: 20px;
+    background: var(--gold-dim);
+    border: 1px solid rgba(212,168,67,0.2);
+  }
+
+  .app-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 3px 10px;
+    border-radius: 100px;
+    float: right;
+    margin-top: -4px;
+  }
+
+  .status-live { background: rgba(16,185,129,0.15); color: #10B981; }
+  .status-beta { background: rgba(212,168,67,0.15); color: var(--gold); }
+  .status-soon { background: rgba(255,255,255,0.06); color: var(--text3); }
+
+  .app-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+  }
+
+  .app-desc {
+    color: var(--text2);
+    font-size: 14px;
+    line-height: 1.6;
+    font-weight: 200;
+    margin-bottom: 20px;
+  }
+
+  .app-tags {
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+
+  .tag {
+    font-size: 11px;
+    color: var(--text3);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-weight: 500;
+  }
+
+  /* ── LEGAL PAGES ── */
+  .legal-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+
+  .legal-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    transition: border-color 0.2s;
+    text-decoration: none;
+    color: inherit;
+  }
+  .legal-card:hover { border-color: var(--gold); }
+
+  .legal-icon {
+    width: 40px; height: 40px;
+    min-width: 40px;
+    background: var(--gold-dim);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+
+  .legal-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+
+  .legal-desc {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.5;
+    font-weight: 200;
+  }
+
+  /* ── FEEDBACK ── */
+  .feedback-form {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text2);
+    margin-bottom: 8px;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 15px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus { border-color: var(--gold); }
+
+  .form-group textarea { height: 140px; resize: vertical; }
+  .form-group select { cursor: pointer; }
+  .form-group select option { background: var(--bg2); }
+
+  .stars {
+    display: flex; gap: 8px; margin-top: 4px;
+  }
+
+  .star {
+    font-size: 28px;
+    cursor: pointer;
+    opacity: 0.3;
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .star.active { opacity: 1; }
+  .star:hover { transform: scale(1.2); }
+
+  .form-submit {
+    width: 100%;
+    background: var(--gold);
+    color: #000;
+    padding: 16px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    font-family: 'Cormorant Garamond', serif;
+    transition: opacity 0.2s;
+    letter-spacing: -0.3px;
+  }
+  .form-submit:hover { opacity: 0.85; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: gap;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .footer-brand {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    font-size: 16px;
+  }
+
+  .footer-links {
+    display: flex; gap: 24px; list-style: none;
+  }
+
+  .footer-links a {
+    color: var(--text3);
+    text-decoration: none;
+    font-size: 13px;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--gold); }
+
+  .footer-copy {
+    color: var(--text3);
+    font-size: 13px;
+  }
+
+  /* ── DIVIDER ── */
+  hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 0;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* ── MOBILE ── */
+  @media (max-width: 768px) {
+    nav { padding: 16px 20px; }
+    .nav-links { display: none; }
+    section { padding: 60px 20px; }
+    .hero { padding: 100px 20px 60px; }
+    .stats-bar { flex-wrap: wrap; }
+    .stat-item { min-width: 50%; border-bottom: 1px solid var(--border); }
+    footer { flex-direction: column; gap: 20px; text-align: center; padding: 30px 20px; }
+    .footer-links { flex-wrap: wrap; justify-content: center; }
+  }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 30px; left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--bg3);
+    border: 1px solid rgba(16,185,129,0.4);
+    border-radius: 12px;
+    padding: 14px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #10B981;
+    z-index: 999;
+    transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-mark">⚡</div>
+    Arkeo Apps
+  </a>
+  <ul class="nav-links">
+    <li><a href="#apps">Applications</a></li>
+    <li><a href="#feedback">Feedback</a></li>
+    <li><a href="#legal">Mentions légales</a></li>
+  </ul>
+  <a href="#feedback" class="nav-cta">Nous contacter</a>
+  <button onclick="toggleTheme()" id="theme-btn" style="
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 16px;
+    color: var(--text);
+    margin-left: 8px;
+    transition: all 0.2s;
+  ">🌙</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-badge">Arkeo Apps · Paris · 2026</div>
+  <h1>Des apps qui<br><span>font vraiment</span><br>le travail</h1>
+  <p class="hero-sub">Des outils mobiles intelligents pensés pour les professionnels du bâtiment, de la gestion et de la productivité.</p>
+  <div class="hero-btns">
+    <a href="#apps" class="btn-primary">Découvrir les apps</a>
+    <a href="#feedback" class="btn-secondary">Nous écrire</a>
+  </div>
+  <div class="stats-bar">
+    <div class="stat-item">
+      <div class="stat-num">6</div>
+      <div class="stat-label">Applications</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">iOS</div>
+      <div class="stat-label">Plateforme</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">2026</div>
+      <div class="stat-label">Fondé</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">FR</div>
+      <div class="stat-label">Paris</div>
+    </div>
+  </div>
+</section>
+
+<hr>
+
+<!-- APPS -->
+<section id="apps">
+  <div class="section-tag">Nos applications</div>
+  <h2 class="section-title">Chaque app,<br>un problème résolu</h2>
+  <p class="section-sub">Des outils conçus sur le terrain, pour le terrain. Simples, rapides, intelligents.</p>
+
+  <div class="apps-grid">
+
+    <div class="app-card">
+      <span class="app-status status-live">● Live</span>
+      <div class="app-icon">🧠</div>
+      <div class="app-name">MindFlow</div>
+      <p class="app-desc">Second cerveau vocal. Dictez vos notes, tâches et réunions — l'IA classe et organise tout automatiquement.</p>
+      <div class="app-tags">
+        <span class="tag">Productivité</span>
+        <span class="tag">IA vocale</span>
+        <span class="tag">Réunions</span>
+        <span class="tag">iPhone</span>
+      </div>
+    </div>
+
+    <div class="app-card">
+      <span class="app-status status-live">● Live</span>
+      <div class="app-icon">📐</div>
+      <div class="app-name">MenuiScan</div>
+      <p class="app-desc">Relevé de menuiseries par guidage visuel. Fenêtres, portes, vitrages — mesures précises et export PDF ANAH.</p>
+      <div class="app-tags">
+        <span class="tag">BTP</span>
+        <span class="tag">Menuiserie</span>
+        <span class="tag">ANAH</span>
+        <span class="tag">PDF</span>
+      </div>
+    </div>
+
+    <div class="app-card">
+      <span class="app-status status-beta">◑ Bêta</span>
+      <div class="app-icon">📋</div>
+      <div class="app-name">DeviFlow</div>
+      <p class="app-desc">Devis BTP intelligent. Saisissez vos prestations en forfait ou détaillé, générez un devis professionnel en secondes.</p>
+      <div class="app-tags">
+        <span class="tag">Devis</span>
+        <span class="tag">Artisans</span>
+        <span class="tag">TVA 10%</span>
+        <span class="tag">PDF</span>
+      </div>
+    </div>
+
+    <div class="app-card">
+      <span class="app-status status-beta">◑ Bêta</span>
+      <div class="app-icon">🏗️</div>
+      <div class="app-name">FaçadeScan</div>
+      <p class="app-desc">Mesure de façades par photo calibrée. Deux mesures réelles + photo = calcul automatique des surfaces.</p>
+      <div class="app-tags">
+        <span class="tag">Façades</span>
+        <span class="tag">Photométrie</span>
+        <span class="tag">Surfaces</span>
+        <span class="tag">GPS</span>
+      </div>
+    </div>
+
+    <div class="app-card">
+      <span class="app-status status-beta">◑ Bêta</span>
+      <div class="app-icon">📄</div>
+      <div class="app-name">ScanThink</div>
+      <p class="app-desc">Scannez vos factures, devis et documents. L'IA extrait automatiquement les données essentielles.</p>
+      <div class="app-tags">
+        <span class="tag">OCR</span>
+        <span class="tag">Factures</span>
+        <span class="tag">Comptabilité</span>
+        <span class="tag">IA</span>
+      </div>
+    </div>
+
+    <div class="app-card">
+      <span class="app-status status-soon">○ Bientôt</span>
+      <div class="app-icon">💎</div>
+      <div class="app-name">812 Conciergerie</div>
+      <p class="app-desc">Conciergerie de luxe digitale. Réservez restaurants, hôtels, véhicules et expériences premium en un tap.</p>
+      <div class="app-tags">
+        <span class="tag">Luxe</span>
+        <span class="tag">Conciergerie</span>
+        <span class="tag">Premium</span>
+        <span class="tag">International</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<hr>
+
+<!-- FEEDBACK -->
+<section id="feedback">
+  <div style="text-align:center; margin-bottom: 60px;">
+    <div class="section-tag" style="text-align:center;">Feedback & Contact</div>
+    <h2 class="section-title">Votre avis<br>compte vraiment</h2>
+    <p class="section-sub" style="margin: 0 auto;">Bugs, suggestions, questions — écrivez-nous. Chaque message est lu par l'équipe.</p>
+  </div>
+
+  <div class="feedback-form">
+    <div class="form-group">
+      <label>Application concernée</label>
+      <select id="app-select">
+        <option value="">Sélectionner une app...</option>
+        <option value="mindflow">MindFlow</option>
+        <option value="menuscan">MenuiScan</option>
+        <option value="deviflow">DeviFlow</option>
+        <option value="facadescan">FaçadeScan</option>
+        <option value="scanthink">ScanThink</option>
+        <option value="812">812 Conciergerie</option>
+        <option value="autre">Autre / Général</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Type de message</label>
+      <select id="type-select">
+        <option value="feedback">Feedback général</option>
+        <option value="bug">Signaler un bug</option>
+        <option value="suggestion">Suggestion d'amélioration</option>
+        <option value="note">Noter l'application</option>
+        <option value="contact">Contact / Question</option>
+      </select>
+    </div>
+
+    <div class="form-group" id="stars-group">
+      <label>Note globale</label>
+      <div class="stars">
+        <span class="star" data-val="1">⭐</span>
+        <span class="star" data-val="2">⭐</span>
+        <span class="star" data-val="3">⭐</span>
+        <span class="star" data-val="4">⭐</span>
+        <span class="star" data-val="5">⭐</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Votre nom (optionnel)</label>
+      <input type="text" id="nom" placeholder="Prénom ou pseudo...">
+    </div>
+
+    <div class="form-group">
+      <label>Email (pour vous répondre)</label>
+      <input type="email" id="email" placeholder="votre@email.com">
+    </div>
+
+    <div class="form-group">
+      <label>Votre message</label>
+      <textarea id="message" placeholder="Décrivez votre retour, bug ou suggestion..."></textarea>
+    </div>
+
+    <button class="form-submit" onclick="envoyerFeedback()">
+      Envoyer le feedback →
+    </button>
+  </div>
+</section>
+
+<hr>
+
+<!-- LEGAL -->
+<section id="legal">
+  <div class="section-tag">Informations légales</div>
+  <h2 class="section-title">Transparence<br>& Confidentialité</h2>
+  <p class="section-sub">Nous respectons votre vie privée. Toutes nos apps suivent les règles RGPD.</p>
+
+  <div class="legal-cards">
+
+    <a href="#confidentialite" class="legal-card">
+      <div class="legal-icon">🔒</div>
+      <div>
+        <div class="legal-title">Politique de confidentialité</div>
+        <p class="legal-desc">Comment nous traitons et protégeons vos données personnelles dans toutes nos apps.</p>
+      </div>
+    </a>
+
+    <a href="#cgu" class="legal-card">
+      <div class="legal-icon">📄</div>
+      <div>
+        <div class="legal-title">Conditions d'utilisation</div>
+        <p class="legal-desc">Les règles d'utilisation de nos applications et services Arkeo.</p>
+      </div>
+    </a>
+
+    <a href="mailto:contact@ark-eo.com" class="legal-card">
+      <div class="legal-icon">✉️</div>
+      <div>
+        <div class="legal-title">Nous contacter</div>
+        <p class="legal-desc">contact@ark-eo.com — Réponse sous 48h ouvrées.</p>
+      </div>
+    </a>
+
+    <a href="mailto:feedback@ark-eo.com" class="legal-card">
+      <div class="legal-icon">💬</div>
+      <div>
+        <div class="legal-title">Feedback & Support</div>
+        <p class="legal-desc">feedback@ark-eo.com — Pour tout retour sur nos applications.</p>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- Mentions légales inline -->
+  <div id="confidentialite" style="margin-top: 60px; background: var(--bg2); border: 1px solid var(--border); border-radius: 20px; padding: 40px;">
+    <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 500; margin-bottom: 20px; letter-spacing: -0.5px;">🔒 Politique de confidentialité</h3>
+    <p style="color: var(--text2); line-height: 1.8; font-size: 14px; font-weight: 200;">
+      <strong style="color: var(--text);">Arkeo Apps</strong> — <em>apps.ark-eo.com</em><br><br>
+
+      <strong style="color: var(--gold);">Données collectées</strong><br>
+      Nos applications collectent uniquement les données nécessaires à leur fonctionnement : notes vocales (stockées localement sur votre iPhone), préférences d'utilisation (stockées en local via UserDefaults), et adresse email si vous nous contactez volontairement.<br><br>
+
+      <strong style="color: var(--gold);">Clé API</strong><br>
+      Votre clé API Anthropic est stockée exclusivement dans le Keychain iOS chiffré de votre appareil. Elle n'est jamais transmise à nos serveurs.<br><br>
+
+      <strong style="color: var(--gold);">Données tierces</strong><br>
+      MindFlow utilise l'API Anthropic pour la classification des notes. Les textes dictés sont transmis à Anthropic pour traitement selon leur propre politique de confidentialité. Aucune autre donnée n'est transmise à des tiers.<br><br>
+
+      <strong style="color: var(--gold);">Vos droits (RGPD)</strong><br>
+      Vous pouvez à tout moment supprimer vos données depuis l'application. Pour toute demande : <a href="mailto:contact@ark-eo.com" style="color: var(--gold);">contact@ark-eo.com</a><br><br>
+
+      <strong style="color: var(--gold);">Mise à jour</strong><br>
+      Dernière mise à jour : 19 mars 2026
+    </p>
+  </div>
+
+  <div id="cgu" style="margin-top: 20px; background: var(--bg2); border: 1px solid var(--border); border-radius: 20px; padding: 40px;">
+    <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 500; margin-bottom: 20px; letter-spacing: -0.5px;">📄 Conditions Générales d'Utilisation</h3>
+    <p style="color: var(--text2); line-height: 1.8; font-size: 14px; font-weight: 200;">
+      <strong style="color: var(--text);">Éditeur</strong><br>
+      Arkeo Apps — apps.ark-eo.com — contact@ark-eo.com<br><br>
+
+      <strong style="color: var(--gold);">Utilisation des apps</strong><br>
+      Nos applications sont destinées à un usage professionnel et personnel. Toute utilisation abusive, frauduleuse ou contraire aux lois en vigueur est interdite.<br><br>
+
+      <strong style="color: var(--gold);">Propriété intellectuelle</strong><br>
+      L'ensemble du contenu, code, design et marques des applications Arkeo Apps sont la propriété exclusive d'Arkeo. Toute reproduction sans autorisation est interdite.<br><br>
+
+      <strong style="color: var(--gold);">Responsabilité</strong><br>
+      Arkeo Apps ne saurait être tenu responsable d'une utilisation incorrecte de ses applications ou de pertes de données liées à l'appareil de l'utilisateur.<br><br>
+
+      <strong style="color: var(--gold);">Droit applicable</strong><br>
+      Les présentes CGU sont soumises au droit français. Tout litige relève de la compétence des tribunaux de Paris.<br><br>
+
+      <strong style="color: var(--gold);">Mise à jour</strong><br>
+      Dernière mise à jour : 19 mars 2026
+    </p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<hr>
+<footer>
+  <div class="footer-brand">Arkeo Apps ⚡</div>
+  <ul class="footer-links">
+    <li><a href="#apps">Applications</a></li>
+    <li><a href="#feedback">Feedback</a></li>
+    <li><a href="#confidentialite">Confidentialité</a></li>
+    <li><a href="#cgu">CGU</a></li>
+    <li><a href="mailto:contact@ark-eo.com">Contact</a></li>
+  </ul>
+  <div class="footer-copy">© 2026 Arkeo Apps — Paris</div>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✅ Message envoyé — Merci !</div>
+
+<script>
+  // ✅ Toggle dark / light
+  function toggleTheme() {
+    const isLight = document.body.classList.toggle('light');
+    document.getElementById('theme-btn').textContent = isLight ? '🌙' : '☀️';
+    localStorage.setItem('arkeo-theme', isLight ? 'light' : 'dark');
+  }
+
+  // Charger le thème sauvegardé
+  if (localStorage.getItem('arkeo-theme') === 'light') {
+    document.body.classList.add('light');
+    document.getElementById('theme-btn').textContent = '🌙';
+  }
+
+  // Stars rating
+  let rating = 0;
+  document.querySelectorAll('.star').forEach(star => {
+    star.addEventListener('click', () => {
+      rating = parseInt(star.dataset.val);
+      document.querySelectorAll('.star').forEach((s, i) => {
+        s.classList.toggle('active', i < rating);
+      });
+    });
+    star.addEventListener('mouseover', () => {
+      const val = parseInt(star.dataset.val);
+      document.querySelectorAll('.star').forEach((s, i) => {
+        s.style.opacity = i < val ? '1' : '0.3';
+      });
+    });
+    star.addEventListener('mouseout', () => {
+      document.querySelectorAll('.star').forEach((s, i) => {
+        s.style.opacity = i < rating ? '1' : '0.3';
+      });
+    });
+  });
+
+  // Show/hide stars based on type
+  document.getElementById('type-select').addEventListener('change', e => {
+    document.getElementById('stars-group').style.display =
+      e.target.value === 'note' ? 'block' : 'none';
+  });
+  document.getElementById('stars-group').style.display = 'none';
+
+  // Feedback submit
+  function envoyerFeedback() {
+    const app = document.getElementById('app-select').value;
+    const type = document.getElementById('type-select').value;
+    const nom = document.getElementById('nom').value;
+    const email = document.getElementById('email').value;
+    const msg = document.getElementById('message').value;
+
+    if (!msg.trim()) {
+      alert('Merci d\'écrire un message avant d\'envoyer.');
+      return;
+    }
+
+    const subject = encodeURIComponent(`[Arkeo - ${app || 'Général'}] ${type}`);
+    const body = encodeURIComponent(
+      `Application : ${app || 'Non précisé'}\nType : ${type}\nNote : ${rating}/5\nNom : ${nom || 'Anonyme'}\n\n${msg}`
+    );
+    window.location.href = `mailto:feedback@ark-eo.com?subject=${subject}&body=${body}`;
+
+    // Toast
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3500);
+  }
+
+  // Smooth scroll for nav links
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const id = a.getAttribute('href').slice(1);
+      const el = document.getElementById(id);
+      if (el) {
+        e.preventDefault();
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
+  // Intersection observer pour animations
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.animation = 'fadeUp 0.5s ease both';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.app-card, .legal-card').forEach(el => {
+    el.style.opacity = '0';
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
